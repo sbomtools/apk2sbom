@@ -1,0 +1,18 @@
+************* Module main
+main.py:57:11: W0703: Catching too general exception Exception (broad-except)
+************* Module statics
+statics.py:1:0: R0801: Similar lines in 2 files
+==cdx:64
+==spdx:53
+            for depend in re.split(' ',pkg['D']):
+                if re.match('so:',depend):
+                    depend= re.sub('(so:)','',depend)
+                    dep2=get_depend(installed_pkgs,depend)
+                    if not dep2:
+                        print(f'burp: {depend}')
+                        continue
+                    depend=dep2 (duplicate-code)
+
+------------------------------------------------------------------
+Your code has been rated at 9.88/10 (previous run: 9.65/10, +0.23)
+
