@@ -4,11 +4,12 @@ Cache processing for apk2sbom
 
 import re
 from os import makedirs,chdir,remove
+from tempfile import TemporaryDirectory
 import urllib.request
 import tarfile
 from base64 import b64decode
 import docker
-from apk2sbom.statics import apkindices,INDEXDIR
+from apk2sbom.statics import apkindices
 
 def get_pkgs(image_name):
     """
@@ -55,8 +56,9 @@ def get_indices():
     """
     Retrieve and process APKINDEX files.
     """
-    makedirs(INDEXDIR,exist_ok=True)
-    chdir(INDEXDIR)
+    index_dir=TemporaryDirectory()
+    # ToDo: for python 3.10 add 'ignore_cleanup_errors=True'
+    chdir(index_dir.name)
     entries=[]
     ind_file='apkindex.tgz'
     for url in apkindices:
@@ -65,6 +67,9 @@ def get_indices():
             index_tar.extract('APKINDEX',path='.')
         entries=apk2json('APKINDEX',entries)
         remove('APKINDEX')
+        remove(ind_file)
+    chdir('..')
+    index_dir.cleanup()
     return entries
 
 def get_depend(pkgs,item):
